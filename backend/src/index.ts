@@ -17,6 +17,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+console.log('🚀 Backend server starting with enhanced CORS configuration...');
+
 // Middleware
 app.use(helmet());
 
@@ -43,6 +45,15 @@ app.use(cors({
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Test CORS endpoint
+app.get('/api/cors-test', (req, res) => {
+  res.json({ 
+    message: 'CORS test successful', 
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Routes
 app.use('/api/users', userRoutes);
