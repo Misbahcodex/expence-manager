@@ -23,7 +23,8 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:3000',
     'http://localhost:3001', // For development
-    'https://*.vercel.app' // For Vercel deployments
+    'https://*.vercel.app', // For Vercel deployments
+    'https://prolific-kindness-production-dcce.up.railway.app' // Your Railway frontend
   ],
   credentials: true
 }));
