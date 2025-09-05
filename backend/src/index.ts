@@ -20,13 +20,10 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:3001', // For development
-    'https://*.vercel.app', // For Vercel deployments
-    'https://prolific-kindness-production-dcce.up.railway.app' // Your Railway frontend
-  ],
-  credentials: true
+  origin: true, // Allow all origins temporarily for testing
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(morgan('combined'));
 app.use(express.json());
