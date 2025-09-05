@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resourceful-tranquility-production.up.railway.app/api';
+// Use Next.js API proxy to bypass CORS issues
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/proxy';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
