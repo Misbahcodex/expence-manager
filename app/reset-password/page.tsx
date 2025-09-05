@@ -62,7 +62,7 @@ export default function ResetPasswordPage() {
       } else {
         setError(data.message || 'Failed to reset password');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to reset password. Please try again.');
     } finally {
       setLoading(false);

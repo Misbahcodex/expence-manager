@@ -285,8 +285,11 @@ function AddTransactionModal({
         date: formData.date
       });
       onSuccess();
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Failed to create transaction');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error 
+        ? (error as any).response?.data?.message || 'Failed to create transaction'
+        : 'Failed to create transaction';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

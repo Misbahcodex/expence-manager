@@ -9,7 +9,7 @@ export default function VerifyEmailPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
   const searchParams = useSearchParams();
-  const router = useRouter();
+  // const router = useRouter();
   const email = searchParams.get('email');
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function VerifyEmailPage() {
         setStatus('error');
         setMessage(data.message || 'Verification failed');
       }
-    } catch (error) {
+    } catch {
       setStatus('error');
       setMessage('Verification failed. Please try again.');
     }

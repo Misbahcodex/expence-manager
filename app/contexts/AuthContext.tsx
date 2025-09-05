@@ -57,16 +57,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(userData));
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Login failed');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error 
+        ? (error as any).response?.data?.message || 'Login failed'
+        : 'Login failed';
+      throw new Error(errorMessage);
     }
   };
 
   const register = async (name: string, email: string, password: string) => {
     try {
       await authAPI.register({ name, email, password });
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      const errorMessage = error && typeof error === 'object' && 'response' in error 
+        ? (error as any).response?.data?.message || 'Registration failed'
+        : 'Registration failed';
+      throw new Error(errorMessage);
     }
   };
 

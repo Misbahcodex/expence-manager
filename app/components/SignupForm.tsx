@@ -47,8 +47,8 @@ export default function SignupForm() {
     try {
       await register(formData.name, formData.email, formData.password);
       router.push('/verify-email?email=' + encodeURIComponent(formData.email));
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
