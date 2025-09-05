@@ -7,6 +7,13 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false, // Disable credentials for CORS
+});
+
+// Add request interceptor to handle CORS
+api.interceptors.request.use((config) => {
+  config.headers['Access-Control-Allow-Origin'] = '*';
+  return config;
 });
 
 // Add token to requests
