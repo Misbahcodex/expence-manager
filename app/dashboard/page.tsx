@@ -287,7 +287,7 @@ function AddTransactionModal({
       onSuccess();
     } catch (error: unknown) {
       const errorMessage = error && typeof error === 'object' && 'response' in error 
-        ? (error as any).response?.data?.message || 'Failed to create transaction'
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to create transaction'
         : 'Failed to create transaction';
       setError(errorMessage);
     } finally {

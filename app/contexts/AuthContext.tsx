@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
     } catch (error: unknown) {
       const errorMessage = error && typeof error === 'object' && 'response' in error 
-        ? (error as any).response?.data?.message || 'Login failed'
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Login failed'
         : 'Login failed';
       throw new Error(errorMessage);
     }
@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await authAPI.register({ name, email, password });
     } catch (error: unknown) {
       const errorMessage = error && typeof error === 'object' && 'response' in error 
-        ? (error as any).response?.data?.message || 'Registration failed'
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Registration failed'
         : 'Registration failed';
       throw new Error(errorMessage);
     }

@@ -21,7 +21,11 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+        process.env.FRONTEND_URL || 'http://localhost:3000',
+        'http://localhost:3001', // For development
+        'https://*.vercel.app' // For Vercel deployments
+    ],
     credentials: true
 }));
 app.use((0, morgan_1.default)('combined'));
