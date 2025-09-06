@@ -26,8 +26,13 @@ function VerifyEmailForm() {
   const verifyEmail = async (token: string) => {
     try {
       const response = await fetch(`http://localhost:5000/api/users/verify/${token}`);
-      const data = await response.json();
-      
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("Invalid JSON response from server");
+      }
+        
       if (data.success) {
         setStatus('success');
         setMessage('Email verified successfully! You can now sign in.');
