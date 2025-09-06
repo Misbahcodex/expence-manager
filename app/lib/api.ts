@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 // ✅ Correct API base URL with /api
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  'https://resourceful-tranquility-production.up.railway.app/api';
+const API_BASE_URL = '/api/proxy';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
