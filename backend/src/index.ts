@@ -14,7 +14,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || '5000', 10);
 
 console.log("🚀 Backend server starting...");
 
@@ -31,8 +31,11 @@ app.use(
       "http://localhost:3000", // local dev
       "http://localhost:3001", // local dev alternative
       "https://prolific-kindness-production-dcce.up.railway.app", // frontend on Railway
-    ],
+      process.env.FRONTEND_URL, // dynamic frontend URL from env
+    ].filter(Boolean), // remove undefined values
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 
