@@ -30,6 +30,9 @@ export const sendVerificationEmail = async (
   }
 
   try {
+    console.log(`🔄 Attempting to send verification email to: ${email}`);
+    console.log(`📧 Using sender: ${process.env.FROM_EMAIL || "Expense Manager <adilmisbah25@gmail.com>"}`);
+    
     const { data, error } = await resend.emails.send({
       from: process.env.FROM_EMAIL || "Expense Manager <onboarding@resend.dev>",
       to: email,
@@ -57,10 +60,20 @@ export const sendVerificationEmail = async (
       `,
     });
 
-    if (error) throw error;
-    console.log("✅ Verification email sent:", data?.id);
+    if (error) {
+      console.error('❌ Resend API Error:', error);
+      throw new Error(`Resend API Error: ${error.error || error.message || 'Unknown error'}`);
+    }
+    console.log("✅ Verification email sent successfully:", data?.id);
   } catch (err) {
     console.error("❌ Error sending verification email:", err);
+    
+    // If Resend fails, log the verification URL for manual use
+    console.log("\n📧 EMAIL SENDING FAILED - MANUAL VERIFICATION REQUIRED:");
+    console.log(`🔗 Verification URL: ${verificationUrl}`);
+    console.log(`📮 Send this URL to user manually: ${email}`);
+    console.log("📧 END MANUAL VERIFICATION INFO\n");
+    
     throw err;
   }
 };
