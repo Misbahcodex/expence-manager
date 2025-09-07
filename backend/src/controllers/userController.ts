@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserModel, CreateUserData, LoginData } from '../models/User-mongo';
 import { generateToken } from '../utils/jwt';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email';
+import { sendVerificationEmailGmail, sendPasswordResetEmailGmail } from '../utils/email-gmail';
 import { v4 as uuidv4 } from 'uuid';
 
 export const register = async (req: Request, res: Response) => {
@@ -35,7 +35,7 @@ export const register = async (req: Request, res: Response) => {
       });
       
       await Promise.race([
-        sendVerificationEmail(email, user.verification_token!, name),
+        sendVerificationEmailGmail(email, user.verification_token!, name),
         emailTimeout
       ]);
       console.log('✅ Verification email sent successfully');
@@ -173,7 +173,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     
     // Send reset email
     try {
-      await sendPasswordResetEmail(email, resetToken, user.name);
+      await sendPasswordResetEmailGmail(email, resetToken, user.name);
     } catch (emailError) {
       console.error('Failed to send password reset email:', emailError);
       return res.status(500).json({
