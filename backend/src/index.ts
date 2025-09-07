@@ -29,6 +29,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000", // local dev
+      "http://localhost:3001", // local dev alternative
       "https://prolific-kindness-production-dcce.up.railway.app", // frontend on Railway
     ],
     credentials: true,
@@ -42,12 +43,36 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/categories", categoryRoutes);
 
 // Health check
-app.get("/api/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "Server is running",
-    timestamp: new Date().toISOString(),
-  });
+app.get("/api/health", async (req, res) => {
+  try {
+    // Check database connection
+    const dbState = require('mongoose').connection.readyState;
+    const statusMap: { [key: number]: string } = {
+      0: 'disconnected',
+      1: 'connected',
+      2: 'connecting',
+      3: 'disconnecting'
+    };
+    const dbStatus = statusMap[dbState] || 'unknown';
+    
+    res.json({
+      success: true,
+      message: "Server is running",
+      timestamp: new Date().toISOString(),
+      database: {
+        status: dbStatus,
+        connected: dbState === 1
+      },
+      environment: process.env.NODE_ENV || 'development',
+      emailService: process.env.RESEND_API_KEY ? 'configured' : 'mock'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Health check failed",
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 // Error handling

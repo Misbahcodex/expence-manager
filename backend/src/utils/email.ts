@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 /**
  * Send Verification Email
@@ -11,8 +11,23 @@ export const sendVerificationEmail = async (
   name: string
 ) => {
   const verificationUrl = `${
-    process.env.FRONTEND_URL || "http://localhost:3000"
+    process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"
   }/verify-email?token=${token}`;
+
+  // If no Resend API key, use mock email (development mode)
+  if (!resend) {
+    console.log("\n🔗 VERIFICATION URL FOR TESTING:");
+    console.log(verificationUrl);
+    console.log("🔗 END VERIFICATION URL\n");
+    
+    console.log("📧 EMAIL WOULD BE SENT:");
+    console.log(`From: Expense Manager <onboarding@resend.dev>`);
+    console.log(`To: ${email}`);
+    console.log(`Subject: Verify Your Email - Expense Manager`);
+    console.log(`Content: Welcome ${name}! Click to verify: ${verificationUrl}`);
+    console.log("📧 END EMAIL LOG\n");
+    return; // Exit early for mock email
+  }
 
   try {
     const { data, error } = await resend.emails.send({
@@ -59,8 +74,23 @@ export const sendPasswordResetEmail = async (
   name: string
 ) => {
   const resetUrl = `${
-    process.env.FRONTEND_URL || "http://localhost:3000"
+    process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"
   }/reset-password?token=${token}`;
+
+  // If no Resend API key, use mock email (development mode)
+  if (!resend) {
+    console.log("\n🔗 PASSWORD RESET URL FOR TESTING:");
+    console.log(resetUrl);
+    console.log("🔗 END RESET URL\n");
+    
+    console.log("📧 RESET EMAIL WOULD BE SENT:");
+    console.log(`From: Expense Manager <onboarding@resend.dev>`);
+    console.log(`To: ${email}`);
+    console.log(`Subject: Password Reset - Expense Manager`);
+    console.log(`Content: Hello ${name}! Click to reset: ${resetUrl}`);
+    console.log("📧 END RESET EMAIL LOG\n");
+    return; // Exit early for mock email
+  }
 
   try {
     const { data, error } = await resend.emails.send({

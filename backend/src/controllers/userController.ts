@@ -28,12 +28,20 @@ export const register = async (req: Request, res: Response) => {
     // Create user
     const user = await UserModel.create({ name, email, password });
     
-    // Send verification email
+    // Send verification email (with timeout)
     try {
-      await sendVerificationEmail(email, user.verification_token!, name);
+      const emailTimeout = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email timeout')), 10000); // 10 second timeout
+      });
+      
+      await Promise.race([
+        sendVerificationEmail(email, user.verification_token!, name),
+        emailTimeout
+      ]);
+      console.log('✅ Verification email sent successfully');
     } catch (emailError) {
       console.error('Failed to send verification email:', emailError);
-      // Don't fail the registration if email fails
+      // Don't fail the registration if email fails - user can still verify later
     }
     
     res.status(201).json({
