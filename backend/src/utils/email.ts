@@ -62,7 +62,7 @@ export const sendVerificationEmail = async (
 
     if (error) {
       console.error('❌ Resend API Error:', error);
-      throw new Error(`Resend API Error: ${error.error || error.message || 'Unknown error'}`);
+      throw new Error(`Resend API Error: ${JSON.stringify(error)}`);
     }
     console.log("✅ Verification email sent successfully:", data?.id);
   } catch (err) {
@@ -133,7 +133,10 @@ export const sendPasswordResetEmail = async (
       `,
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Resend API Error:', error);
+      throw new Error(`Resend API Error: ${JSON.stringify(error)}`);
+    }
     console.log("✅ Password reset email sent:", data?.id);
   } catch (err) {
     console.error("❌ Error sending password reset email:", err);

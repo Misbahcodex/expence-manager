@@ -42,7 +42,7 @@ export async function GET(
 
     const data = await safeJson(response);
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
@@ -75,7 +75,7 @@ export async function POST(
 
     const data = await safeJson(response);
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
@@ -108,7 +108,7 @@ export async function PUT(
 
     const data = await safeJson(response);
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
@@ -139,7 +139,7 @@ export async function DELETE(
 
     const data = await safeJson(response);
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
