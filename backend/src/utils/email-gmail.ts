@@ -1,7 +1,16 @@
-import nodemailer from 'nodemailer';
+// Gmail email service with fallback
+let nodemailer: any;
+try {
+  nodemailer = require('nodemailer');
+} catch (error) {
+  console.log('📧 Nodemailer not available, using fallback email logging');
+}
 
-// Gmail SMTP transporter
+// Gmail SMTP transporter with fallback
 const createTransporter = () => {
+  if (!nodemailer) {
+    throw new Error('Nodemailer not available');
+  }
   return nodemailer.createTransporter({
     service: 'gmail',
     auth: {
@@ -24,6 +33,15 @@ export const sendVerificationEmailGmail = async (
   }/verify-email?token=${token}`;
 
   console.log(`🔄 Sending verification email via Gmail to: ${email}`);
+
+  // Fallback if Gmail not configured
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !nodemailer) {
+    console.log("\n📧 GMAIL NOT CONFIGURED - MANUAL VERIFICATION REQUIRED:");
+    console.log(`🔗 Verification URL: ${verificationUrl}`);
+    console.log(`📮 Send this URL to user manually: ${email}`);
+    console.log("📧 END MANUAL VERIFICATION INFO\n");
+    return { fallback: true, verificationUrl };
+  }
 
   const transporter = createTransporter();
 
@@ -81,6 +99,15 @@ export const sendPasswordResetEmailGmail = async (
   }/reset-password?token=${token}`;
 
   console.log(`🔄 Sending password reset email via Gmail to: ${email}`);
+
+  // Fallback if Gmail not configured
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !nodemailer) {
+    console.log("\n📧 GMAIL NOT CONFIGURED - MANUAL PASSWORD RESET REQUIRED:");
+    console.log(`🔗 Reset URL: ${resetUrl}`);
+    console.log(`📮 Send this URL to user manually: ${email}`);
+    console.log("📧 END MANUAL RESET INFO\n");
+    return { fallback: true, resetUrl };
+  }
 
   const transporter = createTransporter();
 
