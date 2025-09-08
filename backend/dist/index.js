@@ -8,25 +8,15 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const mongodb_1 = require("./config/mongodb");
+const Category_mongo_1 = require("./models/Category-mongo");
+// Routes
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
+const dashboardRoutes_1 = __importDefault(require("./routes/dashboardRoutes"));
+const categoryRoutes_1 = __importDefault(require("./routes/categoryRoutes"));
 dotenv_1.default.config();
 console.log("🚀 Backend server starting...");
-console.log("📦 Basic imports loaded successfully");
-// Import database and models after basic setup
-let connectDatabase = null;
-let CategoryModel = null;
-try {
-    console.log("📦 Loading database config...");
-    const dbModule = require("./config/mongodb");
-    connectDatabase = dbModule.connectDatabase;
-    console.log("📦 Database config loaded");
-    console.log("📦 Loading Category model...");
-    const categoryModule = require("./models/Category-mongo");
-    CategoryModel = categoryModule.CategoryModel;
-    console.log("📦 Category model loaded");
-}
-catch (error) {
-    console.error("❌ Error loading database modules:", error);
-}
 const app = (0, express_1.default)();
 const PORT = parseInt(process.env.PORT || '5000', 10);
 console.log("🚀 Express app created, PORT:", PORT);
@@ -47,8 +37,12 @@ app.use((0, cors_1.default)({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
-// Routes will be loaded dynamically in startServer function
-console.log('🛣️ Route registration postponed until server startup...');
+// Routes
+app.use("/api/users", userRoutes_1.default);
+app.use("/api/transactions", transactionRoutes_1.default);
+app.use("/api/dashboard", dashboardRoutes_1.default);
+app.use("/api/categories", categoryRoutes_1.default);
+console.log('✅ All routes registered successfully');
 // Basic ping endpoint for debugging
 app.get("/", (req, res) => {
     res.json({ message: "Expense Manager Backend is running!", timestamp: new Date().toISOString() });
@@ -115,35 +109,6 @@ const startServer = async () => {
     console.log('- PORT:', PORT);
     console.log('- MONGODB_URI exists:', !!process.env.MONGODB_URI);
     console.log('- RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-    // Load and register routes during server startup
-    try {
-        console.log('🛣️ Loading and registering routes...');
-        const userRoutes = require('./routes/userRoutes').default || require('./routes/userRoutes');
-        if (userRoutes) {
-            app.use('/api/users', userRoutes);
-            console.log('✅ User routes registered');
-        }
-        const transactionRoutes = require('./routes/transactionRoutes').default || require('./routes/transactionRoutes');
-        if (transactionRoutes) {
-            app.use('/api/transactions', transactionRoutes);
-            console.log('✅ Transaction routes registered');
-        }
-        const dashboardRoutes = require('./routes/dashboardRoutes').default || require('./routes/dashboardRoutes');
-        if (dashboardRoutes) {
-            app.use('/api/dashboard', dashboardRoutes);
-            console.log('✅ Dashboard routes registered');
-        }
-        const categoryRoutes = require('./routes/categoryRoutes').default || require('./routes/categoryRoutes');
-        if (categoryRoutes) {
-            app.use('/api/categories', categoryRoutes);
-            console.log('✅ Category routes registered');
-        }
-        console.log('✅ All routes loaded and registered successfully');
-    }
-    catch (error) {
-        console.error('❌ Error loading routes:', error);
-        console.log('⚠️ Server will continue without some routes');
-    }
     // Start the server first, then try to connect to database
     const server = app.listen(PORT, '0.0.0.0', () => {
         console.log(`✅ Server running on port ${PORT}`);
@@ -151,27 +116,17 @@ const startServer = async () => {
         console.log('🔗 Server is listening on all interfaces (0.0.0.0)');
     });
     // Try to connect to database (but don't fail if it's not available)
-    if (connectDatabase) {
-        try {
-            console.log('📡 Attempting to connect to database...');
-            await connectDatabase();
-            console.log('🗜️ Database connected successfully');
-            if (CategoryModel && CategoryModel.createDefaultCategories) {
-                console.log('🗜️ Creating default categories...');
-                await CategoryModel.createDefaultCategories();
-                console.log('✅ Database setup complete');
-            }
-            else {
-                console.log('⚠️ CategoryModel not available, skipping default categories');
-            }
-        }
-        catch (error) {
-            console.error("⚠️ Database connection failed, but server will continue:", error);
-            console.log('🔄 Server will attempt to reconnect to database on API calls');
-        }
+    try {
+        console.log('📡 Attempting to connect to database...');
+        await (0, mongodb_1.connectDatabase)();
+        console.log('🗜️ Database connected successfully');
+        console.log('🗜️ Creating default categories...');
+        await Category_mongo_1.CategoryModel.createDefaultCategories();
+        console.log('✅ Database setup complete');
     }
-    else {
-        console.log('⚠️ Database connection function not available');
+    catch (error) {
+        console.error("⚠️ Database connection failed, but server will continue:", error);
+        console.log('🔄 Server will attempt to reconnect to database on API calls');
     }
     // Graceful shutdown handling
     process.on('SIGTERM', () => {
