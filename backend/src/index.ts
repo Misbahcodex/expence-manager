@@ -82,7 +82,7 @@ app.get("/api/health", async (req, res) => {
         connected: dbState === 1
       },
       environment: process.env.NODE_ENV || 'development',
-      emailService: process.env.RESEND_API_KEY ? 'configured' : 'mock',
+      emailService: (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) ? 'gmail' : (process.env.RESEND_API_KEY ? 'resend' : 'mock'),
       port: PORT
     });
   } catch (error) {
@@ -120,7 +120,10 @@ const startServer = async () => {
   console.log('- NODE_ENV:', process.env.NODE_ENV);
   console.log('- PORT:', PORT);
   console.log('- MONGODB_URI exists:', !!process.env.MONGODB_URI);
+  console.log('- GMAIL_USER exists:', !!process.env.GMAIL_USER);
+  console.log('- GMAIL_APP_PASSWORD exists:', !!process.env.GMAIL_APP_PASSWORD);
   console.log('- RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+  console.log('- FRONTEND_URL exists:', !!process.env.FRONTEND_URL);
   // Start the server first, then try to connect to database
   const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server running on port ${PORT}`);

@@ -10,10 +10,19 @@ const createGmailTransporter = () => {
 
   return nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false
+    },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 5000, // 5 seconds
+    socketTimeout: 10000, // 10 seconds
   });
 };
 
@@ -30,6 +39,10 @@ export const sendVerificationEmail = async (
   }/verify-email?token=${token}`;
 
   console.log(`📧 Sending verification email to: ${email}`);
+  console.log('🔧 Gmail config check:');
+  console.log('- GMAIL_USER exists:', !!process.env.GMAIL_USER);
+  console.log('- GMAIL_APP_PASSWORD exists:', !!process.env.GMAIL_APP_PASSWORD);
+  console.log('- GMAIL_USER value:', process.env.GMAIL_USER ? process.env.GMAIL_USER.substring(0, 3) + '***' : 'not set');
 
   // Fallback logging if Gmail not configured
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
