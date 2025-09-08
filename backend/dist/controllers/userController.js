@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.forgotPassword = exports.verifyEmail = exports.login = exports.register = void 0;
 const User_mongo_1 = require("../models/User-mongo");
 const jwt_1 = require("../utils/jwt");
-const email_clean_1 = require("../utils/email-clean");
+const email_railway_1 = require("../utils/email-railway");
 const uuid_1 = require("uuid");
 const register = async (req, res) => {
     try {
@@ -31,7 +31,7 @@ const register = async (req, res) => {
                 setTimeout(() => reject(new Error('Email timeout')), 10000); // 10 second timeout
             });
             await Promise.race([
-                (0, email_clean_1.sendVerificationEmail)(email, user.verification_token, name),
+                (0, email_railway_1.sendVerificationEmail)(email, user.verification_token, name),
                 emailTimeout
             ]);
             console.log('✅ Verification email sent successfully');
@@ -158,7 +158,7 @@ const forgotPassword = async (req, res) => {
         await User_mongo_1.UserModel.setResetToken(email, resetToken, resetExpiry);
         // Send reset email
         try {
-            await (0, email_clean_1.sendPasswordResetEmail)(email, resetToken, user.name);
+            await (0, email_railway_1.sendPasswordResetEmail)(email, resetToken, user.name);
         }
         catch (emailError) {
             console.error('Failed to send password reset email:', emailError);

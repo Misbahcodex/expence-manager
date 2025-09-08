@@ -82,7 +82,7 @@ app.get("/api/health", async (req, res) => {
         connected: dbState === 1
       },
       environment: process.env.NODE_ENV || 'development',
-      emailService: (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) ? 'gmail' : (process.env.RESEND_API_KEY ? 'resend' : 'mock'),
+      emailService: process.env.RESEND_API_KEY ? 'resend-http' : (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) ? 'gmail-smtp' : 'mock',
       port: PORT
     });
   } catch (error) {
