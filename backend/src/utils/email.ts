@@ -1,6 +1,24 @@
 import { Resend } from "resend";
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+// Lazy initialization to prevent startup crashes
+let resend: Resend | null = null;
+
+function getResendInstance() {
+  if (!process.env.RESEND_API_KEY) {
+    return null;
+  }
+  
+  if (!resend) {
+    try {
+      resend = new Resend(process.env.RESEND_API_KEY);
+    } catch (error) {
+      console.error('❌ Failed to initialize Resend:', error);
+      return null;
+    }
+  }
+  
+  return resend;
+}
 
 /**
  * Send Verification Email
@@ -14,8 +32,11 @@ export const sendVerificationEmail = async (
     process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"
   }/verify-email?token=${token}`;
 
+  // Get Resend instance (lazy initialization)
+  const resendInstance = getResendInstance();
+  
   // If no Resend API key, use mock email (development mode)
-  if (!resend) {
+  if (!resendInstance) {
     console.log("\n🔗 VERIFICATION URL FOR TESTING:");
     console.log(verificationUrl);
     console.log("🔗 END VERIFICATION URL\n");
@@ -33,7 +54,7 @@ export const sendVerificationEmail = async (
     console.log(`🔄 Attempting to send verification email to: ${email}`);
     console.log(`📧 Using sender: ${process.env.FROM_EMAIL || "Expense Manager <adilmisbah25@gmail.com>"}`);
     
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await resendInstance.emails.send({
       from: process.env.FROM_EMAIL || "Expense Manager <onboarding@resend.dev>",
       to: email,
       subject: "Verify Your Email - Expense Manager",
@@ -90,8 +111,11 @@ export const sendPasswordResetEmail = async (
     process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"
   }/reset-password?token=${token}`;
 
+  // Get Resend instance (lazy initialization)
+  const resendInstance = getResendInstance();
+  
   // If no Resend API key, use mock email (development mode)
-  if (!resend) {
+  if (!resendInstance) {
     console.log("\n🔗 PASSWORD RESET URL FOR TESTING:");
     console.log(resetUrl);
     console.log("🔗 END RESET URL\n");
@@ -106,7 +130,7 @@ export const sendPasswordResetEmail = async (
   }
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await resendInstance.emails.send({
       from: process.env.FROM_EMAIL || "Expense Manager <onboarding@resend.dev>",
       to: email,
       subject: "Password Reset - Expense Manager",

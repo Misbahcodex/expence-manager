@@ -1,53 +1,46 @@
-import nodemailer from 'nodemailer';
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendPasswordResetEmail = exports.sendVerificationEmail = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
 /**
  * Create Gmail transporter
  */
 const createGmailTransporter = () => {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    throw new Error('Gmail credentials not configured. Please set GMAIL_USER and GMAIL_APP_PASSWORD in environment variables.');
-  }
-
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+        throw new Error('Gmail credentials not configured. Please set GMAIL_USER and GMAIL_APP_PASSWORD in environment variables.');
+    }
+    return nodemailer_1.default.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_APP_PASSWORD,
+        },
+    });
 };
-
 /**
  * Send Verification Email using Gmail
  */
-export const sendVerificationEmail = async (
-  email: string,
-  token: string,
-  name: string
-) => {
-  const verificationUrl = `${
-    process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"
-  }/verify-email?token=${token}`;
-
-  console.log(`📧 Sending verification email to: ${email}`);
-
-  // Fallback logging if Gmail not configured
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log("\n📧 GMAIL NOT CONFIGURED - MANUAL VERIFICATION:");
-    console.log(`🔗 Verification URL: ${verificationUrl}`);
-    console.log(`📮 Send this URL to: ${email}`);
-    console.log("📧 Configure Gmail credentials for automatic emails\n");
-    return { fallback: true, verificationUrl };
-  }
-
-  try {
-    const transporter = createGmailTransporter();
-
-    const mailOptions = {
-      from: `"Expense Manager" <${process.env.GMAIL_USER}>`,
-      to: email,
-      subject: 'Verify Your Email - Expense Manager',
-      html: `
+const sendVerificationEmail = async (email, token, name) => {
+    const verificationUrl = `${process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"}/verify-email?token=${token}`;
+    console.log(`📧 Sending verification email to: ${email}`);
+    // Fallback logging if Gmail not configured
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+        console.log("\n📧 GMAIL NOT CONFIGURED - MANUAL VERIFICATION:");
+        console.log(`🔗 Verification URL: ${verificationUrl}`);
+        console.log(`📮 Send this URL to: ${email}`);
+        console.log("📧 Configure Gmail credentials for automatic emails\n");
+        return { fallback: true, verificationUrl };
+    }
+    try {
+        const transporter = createGmailTransporter();
+        const mailOptions = {
+            from: `"Expense Manager" <${process.env.GMAIL_USER}>`,
+            to: email,
+            subject: 'Verify Your Email - Expense Manager',
+            html: `
         <!DOCTYPE html>
         <html>
         <head>
@@ -101,56 +94,43 @@ export const sendVerificationEmail = async (
         </body>
         </html>
       `,
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Verification email sent successfully:', result.messageId);
-    return result;
-
-  } catch (error) {
-    console.error('❌ Failed to send verification email:', error);
-    
-    // Fallback logging
-    console.log("\n📧 EMAIL FAILED - MANUAL VERIFICATION REQUIRED:");
-    console.log(`🔗 Verification URL: ${verificationUrl}`);
-    console.log(`📮 Send this URL to: ${email}`);
-    console.log("📧 Check Gmail credentials and try again\n");
-    
-    throw error;
-  }
+        };
+        const result = await transporter.sendMail(mailOptions);
+        console.log('✅ Verification email sent successfully:', result.messageId);
+        return result;
+    }
+    catch (error) {
+        console.error('❌ Failed to send verification email:', error);
+        // Fallback logging
+        console.log("\n📧 EMAIL FAILED - MANUAL VERIFICATION REQUIRED:");
+        console.log(`🔗 Verification URL: ${verificationUrl}`);
+        console.log(`📮 Send this URL to: ${email}`);
+        console.log("📧 Check Gmail credentials and try again\n");
+        throw error;
+    }
 };
-
+exports.sendVerificationEmail = sendVerificationEmail;
 /**
  * Send Password Reset Email using Gmail
  */
-export const sendPasswordResetEmail = async (
-  email: string,
-  token: string,
-  name: string
-) => {
-  const resetUrl = `${
-    process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"
-  }/reset-password?token=${token}`;
-
-  console.log(`📧 Sending password reset email to: ${email}`);
-
-  // Fallback logging if Gmail not configured
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log("\n📧 GMAIL NOT CONFIGURED - MANUAL PASSWORD RESET:");
-    console.log(`🔗 Reset URL: ${resetUrl}`);
-    console.log(`📮 Send this URL to: ${email}`);
-    console.log("📧 Configure Gmail credentials for automatic emails\n");
-    return { fallback: true, resetUrl };
-  }
-
-  try {
-    const transporter = createGmailTransporter();
-
-    const mailOptions = {
-      from: `"Expense Manager" <${process.env.GMAIL_USER}>`,
-      to: email,
-      subject: 'Password Reset - Expense Manager',
-      html: `
+const sendPasswordResetEmail = async (email, token, name) => {
+    const resetUrl = `${process.env.FRONTEND_URL || "https://prolific-kindness-production-dcce.up.railway.app"}/reset-password?token=${token}`;
+    console.log(`📧 Sending password reset email to: ${email}`);
+    // Fallback logging if Gmail not configured
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+        console.log("\n📧 GMAIL NOT CONFIGURED - MANUAL PASSWORD RESET:");
+        console.log(`🔗 Reset URL: ${resetUrl}`);
+        console.log(`📮 Send this URL to: ${email}`);
+        console.log("📧 Configure Gmail credentials for automatic emails\n");
+        return { fallback: true, resetUrl };
+    }
+    try {
+        const transporter = createGmailTransporter();
+        const mailOptions = {
+            from: `"Expense Manager" <${process.env.GMAIL_USER}>`,
+            to: email,
+            subject: 'Password Reset - Expense Manager',
+            html: `
         <!DOCTYPE html>
         <html>
         <head>
@@ -212,21 +192,20 @@ export const sendPasswordResetEmail = async (
         </body>
         </html>
       `,
-    };
-
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully:', result.messageId);
-    return result;
-
-  } catch (error) {
-    console.error('❌ Failed to send password reset email:', error);
-    
-    // Fallback logging
-    console.log("\n📧 EMAIL FAILED - MANUAL PASSWORD RESET REQUIRED:");
-    console.log(`🔗 Reset URL: ${resetUrl}`);
-    console.log(`📮 Send this URL to: ${email}`);
-    console.log("📧 Check Gmail credentials and try again\n");
-    
-    throw error;
-  }
+        };
+        const result = await transporter.sendMail(mailOptions);
+        console.log('✅ Password reset email sent successfully:', result.messageId);
+        return result;
+    }
+    catch (error) {
+        console.error('❌ Failed to send password reset email:', error);
+        // Fallback logging
+        console.log("\n📧 EMAIL FAILED - MANUAL PASSWORD RESET REQUIRED:");
+        console.log(`🔗 Reset URL: ${resetUrl}`);
+        console.log(`📮 Send this URL to: ${email}`);
+        console.log("📧 Check Gmail credentials and try again\n");
+        throw error;
+    }
 };
+exports.sendPasswordResetEmail = sendPasswordResetEmail;
+//# sourceMappingURL=email-clean.js.map

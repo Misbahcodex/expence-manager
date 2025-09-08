@@ -45,7 +45,7 @@ app.use(
       "http://localhost:3001", // local dev alternative
       "https://prolific-kindness-production-dcce.up.railway.app", // frontend on Railway
       process.env.FRONTEND_URL, // dynamic frontend URL from env
-    ].filter(Boolean), // remove undefined values
+    ].filter(Boolean) as string[], // remove undefined values
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
