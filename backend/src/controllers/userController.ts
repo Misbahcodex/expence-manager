@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserModel, CreateUserData, LoginData } from '../models/User-mongo';
 import { generateToken } from '../utils/jwt';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email-railway';
+import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email-brevo';
 import { v4 as uuidv4 } from 'uuid';
 
 export const register = async (req: Request, res: Response) => {
