@@ -25,16 +25,15 @@ const register = async (req, res) => {
         }
         // Create user
         const user = await User_mongo_1.UserModel.create({ name, email, password });
-        // Send verification email (with timeout)
+        // Send verification email (fast HTTP API only)
         try {
-            const emailTimeout = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Email timeout')), 10000); // 10 second timeout
-            });
-            await Promise.race([
-                (0, email_brevo_1.sendVerificationEmail)(email, user.verification_token, name),
-                emailTimeout
-            ]);
-            console.log('✅ Verification email sent successfully');
+            const emailResult = await (0, email_brevo_1.sendVerificationEmail)(email, user.verification_token, name);
+            if (emailResult.success) {
+                console.log('✅ Verification email sent successfully');
+            }
+            else {
+                console.error('Failed to send verification email:', emailResult.error);
+            }
         }
         catch (emailError) {
             console.error('Failed to send verification email:', emailError);

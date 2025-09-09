@@ -107,24 +107,25 @@ async function sendEmailViaBrevoSMTP(to, subject, html, from = '"Expense Manager
     }
 }
 /**
- * Send email with automatic fallback (API -> SMTP -> Manual)
+ * Send email via Brevo API only (Railway compatible)
  */
 async function sendEmail(to, subject, htmlContent) {
-    // Try Brevo API first (Railway compatible)
+    console.log(`📧 Sending email via Brevo API to: ${to}`);
+    // Only use Brevo API (Railway compatible - no SMTP timeout)
     const apiResult = await sendEmailViaBrevoAPI(to, subject, htmlContent);
     if (apiResult.success) {
+        console.log('✅ Email sent successfully via Brevo API');
         return apiResult;
     }
-    console.log('📧 API failed, trying SMTP...');
-    // Fallback to SMTP
-    const smtpResult = await sendEmailViaBrevoSMTP(to, subject, htmlContent);
-    if (smtpResult.success) {
-        return smtpResult;
+    console.error('❌ Brevo API email sending failed:', apiResult.error);
+    // Check if it's an API key issue
+    if (apiResult.error?.includes('401') || apiResult.error?.includes('unauthorized') || apiResult.error?.includes('Key not found')) {
+        console.error('🔑 Invalid Brevo API key - check your Railway environment variables');
+        console.error('💡 Brevo API keys should look like: xkeysib-xxxxxxxx-xxxxxxxx');
     }
-    console.log('📧 Both API and SMTP failed');
     return {
         success: false,
-        error: 'All email delivery methods failed'
+        error: apiResult.error || 'Brevo API failed'
     };
 }
 /**
@@ -224,10 +225,10 @@ const sendVerificationEmail = async (email, token, name) => {
         console.log(`🔗 Verification URL: ${verificationUrl}`);
         console.log(`📮 Send this URL to user manually: ${email}`);
         console.log('📧 Configure Brevo credentials for automatic emails\n');
-        // Don't throw error - let user signup succeed with manual verification
-        return;
+        return result; // Return the failed result
     }
     console.log('✅ Verification email sent successfully via Brevo');
+    return result;
 };
 exports.sendVerificationEmail = sendVerificationEmail;
 /**
