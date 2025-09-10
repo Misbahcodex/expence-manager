@@ -329,8 +329,8 @@ function AddTransactionModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-20 overflow-y-auto h-full w-full z-10">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-black/60 overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 w-[40%] border  shadow-lg rounded-md bg-white">
         <div className="mt-3">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium text-black">Add Transaction</h3>
