@@ -163,7 +163,7 @@ export default function DashboardPage() {
                   <select
                     value={filter}
                     onChange={(e) => setFilter(e.target.value as 'all' | 'expense' | 'earning')}
-                    className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+                    className="border border-gray-300 text-black rounded-md px-3 py-1 text-sm"
                   >
                     <option value="all">All</option>
                     <option value="expense">Expenses</option>
@@ -296,11 +296,11 @@ function AddTransactionModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div className="mt-3">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-900">Add Transaction</h3>
+            <h3 className="text-lg font-medium text-black">Add Transaction</h3>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
@@ -320,11 +320,11 @@ function AddTransactionModal({
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm font-medium text-black">Category</label>
               <select
                 value={formData.category_id}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 required
               >
                 <option value="">Select a category</option>
@@ -337,37 +337,37 @@ function AddTransactionModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Amount</label>
+              <label className="block text-sm font-medium text-black">Amount</label>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="0.00"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <label className="block text-sm font-medium text-black">Description</label>
               <input
                 type="text"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Optional description"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date</label>
+              <label className="block text-sm font-medium text-black">Date</label>
               <input
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
@@ -376,7 +376,7 @@ function AddTransactionModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-md text-black hover:bg-gray-50"
               >
                 Cancel
               </button>
