@@ -13,7 +13,11 @@
     "build:backend": "cd backend && npm run build",
     "build:frontend": "next build",
     "install:all": "npm install && cd backend && npm install",
-    "lint": "next lint"
+    "lint": "next lint",
+    "security:scan": "node security-scan.js",
+    "security:check-env": "node check-env-vars.js",
+    "precommit": "npm run security:scan",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -36,6 +40,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
+    "husky": "^8.0.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

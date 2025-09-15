@@ -6,7 +6,11 @@
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "nodemon --exec npx ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:email": "ts-node src/utils/test-secure-email.ts",
+    "security:scan": "node ../security-scan.js",
+    "security:check-env": "node ../check-env-vars.js",
+    "precommit": "npm run security:scan"
   },
   "keywords": [],
   "author": "",

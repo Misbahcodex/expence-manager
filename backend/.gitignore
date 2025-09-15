@@ -1,0 +1,40 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# API keys and secrets
+*.pem
+*.key
+
+# Security scan reports
+security-report.json
+security-report.txt

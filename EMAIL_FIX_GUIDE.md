@@ -9,9 +9,9 @@ Your Resend API key works, but **Gmail domains need verification** in Resend. Th
 Add these to your Railway **backend** service:
 
 ```env
-RESEND_API_KEY=re_BsPZ4MPx_HmmvMTzHt9KTDmPSA7n9PGGe
-FROM_EMAIL=Expense Manager <adilmisbah25@gmail.com>
-FRONTEND_URL=https://prolific-kindness-production-dcce.up.railway.app
+RESEND_API_KEY=your_resend_api_key_here
+FROM_EMAIL=Expense Manager <your_verified_email@example.com>
+FRONTEND_URL=https://your-app-url.up.railway.app
 NODE_ENV=production
 ```
 
@@ -70,9 +70,9 @@ Switch to a service that doesn't require domain verification:
 ## 🚀 **QUICK FIX STEPS (DO THIS NOW):**
 
 1. **Add environment variables** to Railway backend:
-   - `RESEND_API_KEY=re_BsPZ4MPx_HmmvMTzHt9KTDmPSA7n9PGGe`
-   - `FROM_EMAIL=Expense Manager <adilmisbah25@gmail.com>`
-   - `FRONTEND_URL=https://prolific-kindness-production-dcce.up.railway.app`
+   - `RESEND_API_KEY=your_resend_api_key_here`
+   - `FROM_EMAIL=Expense Manager <your_verified_email@example.com>`
+   - `FRONTEND_URL=https://your-app-url.up.railway.app`
 
 2. **Wait 2-3 minutes** for Railway to redeploy
 

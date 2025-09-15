@@ -20,15 +20,47 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle token expiration
+// Handle token expiration and refresh
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // If error is 401 and we haven't tried to refresh the token yet
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      try {
+        // Try to refresh the token
+        const response = await api.post('/users/refresh-token');
+        
+        if (response.data.token) {
+          // Update token in localStorage
+          localStorage.setItem('token', response.data.token);
+          
+          // Update Authorization header
+          api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+          originalRequest.headers['Authorization'] = `Bearer ${response.data.token}`;
+          
+          // Retry the original request
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        // If refresh token fails, logout
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+    
+    // For other errors or if token refresh failed
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
+    
     return Promise.reject(error);
   }
 );
@@ -40,6 +72,10 @@ export const authAPI = {
 
   login: (data: { email: string; password: string }) =>
     api.post('/users/login', data),
+
+  logout: () => api.post('/users/logout'),
+  
+  refreshToken: () => api.post('/users/refresh-token'),
 
   verifyEmail: (token: string) => api.get(`/users/verify/${token}`),
 

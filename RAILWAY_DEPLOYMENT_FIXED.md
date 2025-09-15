@@ -19,7 +19,7 @@ JWT_SECRET=your_super_secure_jwt_secret_minimum_32_characters_long
 JWT_EXPIRES_IN=7d
 
 # Email Configuration (REQUIRED for real emails)
-RESEND_API_KEY=re_BsPZ4MPx_HmmvMTzHt9KTDmPSA7n9PGGe
+RESEND_API_KEY=your_resend_api_key_here
 FROM_EMAIL=Expense Manager <noreply@yourdomain.com>
 
 # Server Configuration
@@ -36,7 +36,7 @@ FRONTEND_URL=https://prolific-kindness-production-dcce.up.railway.app
 1. Go to your Railway backend service dashboard
 2. Go to **Variables** tab
 3. Add/Update these variables:
-   - `RESEND_API_KEY` = `re_BsPZ4MPx_HmmvMTzHt9KTDmPSA7n9PGGe`
+   - `RESEND_API_KEY` = `your_resend_api_key_here`
    - `FRONTEND_URL` = `https://prolific-kindness-production-dcce.up.railway.app`
    - `NODE_ENV` = `production`
    - Ensure `MONGODB_URI` is set to your MongoDB Atlas connection string

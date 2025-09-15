@@ -4,8 +4,11 @@ import {
   login,
   verifyEmail,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  refreshToken,
+  logout
 } from '../controllers/userController';
+import { authenticate } from '../middleware/auth';
 
 const router = Router();
 
@@ -14,5 +17,7 @@ router.post('/login', login);
 router.get('/verify/:token', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post('/refresh-token', refreshToken);
+router.post('/logout', authenticate, logout);
 
 export default router;

@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running security checks before commit..."
+
+# Run security scan
+npm run security:scan
+
+# Check for sensitive data in staged files
+echo "Checking for sensitive data in staged files..."
+if git diff --cached --name-only | xargs grep -l "API_KEY\|SECRET\|PASSWORD\|TOKEN" 2>/dev/null; then
+  echo "⚠️ WARNING: Potential sensitive data found in staged files. Please review before committing."
+  exit 1
+fi
+
+# Check for large files
+echo "Checking for large files..."
+if git diff --cached --name-only | xargs du -h 2>/dev/null | grep -E "^[0-9]+M"; then
+  echo "⚠️ WARNING: Large files detected. Please review before committing."
+  exit 1
+fi
+
+# Run linting
+npm run lint

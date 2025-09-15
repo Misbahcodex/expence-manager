@@ -10,6 +10,7 @@ export interface IUser extends Document {
   verification_token?: string;
   reset_token?: string;
   reset_token_expiry?: Date;
+  token_version: number;
   created_at: Date;
 }
 
@@ -41,6 +42,10 @@ const UserSchema = new Schema<IUser>({
   },
   reset_token: String,
   reset_token_expiry: Date,
+  token_version: {
+    type: Number,
+    default: 0
+  },
   created_at: {
     type: Date,
     default: Date.now
@@ -129,6 +134,14 @@ export class UserModel {
   
   static async validatePassword(password: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
+  }
+  
+  static async incrementTokenVersion(userId: string): Promise<void> {
+    await User.findByIdAndUpdate(userId, { $inc: { token_version: 1 } });
+  }
+  
+  static async revokeAllTokens(userId: string): Promise<void> {
+    await User.findByIdAndUpdate(userId, { token_version: 0 });
   }
 }
 
