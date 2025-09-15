@@ -21,4 +21,4 @@ if git diff --cached --name-only | xargs du -h 2>/dev/null | grep -E "^[0-9]+M";
 fi
 
 # Run linting
-npm run lint
+npm run lintnpm run security:scan
